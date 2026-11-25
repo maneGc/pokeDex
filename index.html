@@ -1,0 +1,562 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Field Pokédex 021–120</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a field device — sticky control strip, specimen grid on the left, an entry sheet docked on the right (bottom sheet on phones). */
+:root {
+  --bg: #e9edf0;
+  --surface: #f7f9fa;
+  --ink: #13181c;
+  --muted: #5b6770;
+  --line: #c9d1d7;
+  --accent: #c8242f;
+  --bar: #2b6f8f;
+  --bar-track: #d4dce1;
+  --ok: #1f7a4d;
+  --warn: #9a6200;
+  --shadow: 0 1px 2px rgba(19,24,28,.06), 0 8px 24px rgba(19,24,28,.06);
+  --font-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --panel-w: 420px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101417; --surface: #181e22; --ink: #e6ecef; --muted: #8e9ba4;
+    --line: #2a3339; --accent: #ef4a52; --bar: #5fb3d6; --bar-track: #263037;
+    --ok: #5cc98f; --warn: #e3a948;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101417; --surface: #181e22; --ink: #e6ecef; --muted: #8e9ba4;
+  --line: #2a3339; --accent: #ef4a52; --bar: #5fb3d6; --bar-track: #263037;
+  --ok: #5cc98f; --warn: #e3a948;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  color-scheme: dark;
+}
+
+/* Type colours are data, shared by both themes: each chip carries its own fill and text. */
+.t-normal{--tc:#a8a77a;--tt:#1b1b10}.t-fire{--tc:#ee8130;--tt:#2a1200}.t-water{--tc:#6390f0;--tt:#06122e}
+.t-electric{--tc:#f7d02c;--tt:#2a2200}.t-grass{--tc:#7ac74c;--tt:#0f2204}.t-ice{--tc:#96d9d6;--tt:#06211f}
+.t-fighting{--tc:#c22e28;--tt:#fff}.t-poison{--tc:#a33ea1;--tt:#fff}.t-ground{--tc:#e2bf65;--tt:#2a1d00}
+.t-flying{--tc:#a98ff3;--tt:#160b33}.t-psychic{--tc:#f95587;--tt:#2c0412}.t-bug{--tc:#a6b91a;--tt:#1a1f00}
+.t-rock{--tc:#b6a136;--tt:#211b00}.t-ghost{--tc:#735797;--tt:#fff}.t-dragon{--tc:#6f35fc;--tt:#fff}
+.t-dark{--tc:#705746;--tt:#fff}.t-steel{--tc:#b7b7ce;--tt:#16162a}.t-fairy{--tc:#d685ad;--tt:#2c0a1b}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 15px/1.5 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 30; background: var(--surface);
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.wrap {
+  max-width: 1360px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Header / control strip */
+header.strip {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.strip-top { display: flex; align-items: center; gap: 16px; padding-block: 14px 10px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.lens {
+  width: 34px; height: 34px; border-radius: 50%; flex: none;
+  background: radial-gradient(circle at 35% 35%, #9fe0ff 0 18%, #2a9fd6 19% 55%, #0d4f73 56%);
+  box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--accent);
+}
+.brand h1 { font-size: 22px; font-weight: 700; letter-spacing: .02em; line-height: 1.1; }
+.source { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--muted); font-size: 12px; letter-spacing: .04em; }
+.source .led { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.source[data-kind="live"] .led { background: var(--ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 22%, transparent); }
+.source[data-kind="loading"] .led { background: var(--warn); animation: pulse 1s ease-in-out infinite; }
+.source[data-kind="saved"] .led { background: var(--warn); }
+@keyframes pulse { 50% { opacity: .3; } }
+.search { flex: 1 1 260px; display: flex; gap: 8px; min-width: 0; }
+.search input {
+  flex: 1; min-width: 0; padding: 9px 12px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--bg);
+}
+.search select { padding: 9px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); }
+.types { display: flex; gap: 6px; padding-block: 0 12px; overflow-x: auto; scrollbar-width: thin; }
+.chip {
+  border: 1px solid var(--line); background: transparent; border-radius: 999px;
+  padding: 3px 10px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+  cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+}
+.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--tc, var(--muted)); }
+.chip .n { color: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.chip[aria-pressed="true"] { background: var(--tc, var(--ink)); color: var(--tt, var(--bg)); border-color: transparent; }
+.chip[aria-pressed="true"] .n { color: inherit; opacity: .75; }
+.chip[aria-pressed="true"] .dot { background: currentColor; }
+
+/* Main split */
+main.wrap { display: grid; grid-template-columns: minmax(0, 1fr) var(--panel-w); gap: 24px; padding-block: 20px 40px; align-items: start; }
+.meta { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 13px; margin-bottom: 12px; flex-wrap: wrap; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.card {
+  position: relative; display: flex; flex-direction: column; gap: 6px; text-align: left;
+  padding: 10px 12px 12px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--surface); cursor: pointer; transition: transform .15s, border-color .15s;
+}
+.card:hover { transform: translateY(-2px); border-color: var(--muted); }
+.card[aria-current="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.card .no { font-size: 12px; color: var(--muted); }
+/* --c1 / --c2 are the first and second type colours (the same colour twice for single-type). */
+.card .art {
+  aspect-ratio: 1; max-width: 100%; border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 58%, color-mix(in srgb, var(--surface) 40%, transparent), transparent 60%),
+    linear-gradient(135deg, color-mix(in srgb, var(--c1) 58%, var(--surface)) 40%, color-mix(in srgb, var(--c2) 58%, var(--surface)) 60%);
+  display: grid; place-items: center;
+}
+.card img { width: 88%; height: 88%; object-fit: contain; }
+.card .nm { font-family: var(--font-display); font-weight: 600; font-size: 16px; text-transform: capitalize; line-height: 1.2; }
+.pills { display: flex; gap: 4px; flex-wrap: wrap; }
+.pill { background: var(--tc); color: var(--tt); font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 1px 7px; border-radius: 4px; }
+.empty { padding: 40px 16px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; }
+.empty button { margin-top: 10px; }
+
+/* Entry sheet */
+.sheet {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--strip-h, 120px) + 20px);
+  max-height: calc(100vh - var(--strip-h, 120px) - 40px); overflow: auto;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+}
+.sheet-hero {
+  position: relative; padding: 16px 18px 0;
+  background:
+    linear-gradient(180deg, transparent 45%, var(--surface)),
+    linear-gradient(120deg, color-mix(in srgb, var(--c1) 50%, var(--surface)) 30%, color-mix(in srgb, var(--c2) 50%, var(--surface)) 70%);
+  border-radius: 14px 14px 0 0;
+}
+.sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.sheet-head .no { font-size: 13px; color: var(--muted); }
+.sheet h2 { font-size: 30px; font-weight: 700; text-transform: capitalize; line-height: 1.1; }
+.genus { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.sheet-hero img.hero-art { display: block; width: 220px; max-width: 62%; aspect-ratio: 1; margin: 4px 0 -8px 8%; object-fit: contain; filter: drop-shadow(0 10px 14px rgba(0,0,0,.18)); }
+/* Small 3D model tile docked in the hero's lower-right corner */
+.model {
+  position: absolute; right: 14px; bottom: 6px; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.stage {
+  position: relative; width: 104px; height: 104px; border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  background:
+    radial-gradient(ellipse 38% 9% at 50% 84%, color-mix(in srgb, var(--ink) 22%, transparent), transparent 100%),
+    color-mix(in srgb, var(--surface) 70%, transparent);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  display: grid; place-items: end center; padding-bottom: 14px; overflow: hidden;
+}
+.stage img { display: block; max-width: 86%; max-height: 80px; width: auto; height: auto; object-fit: contain; }
+.stage .tag { position: absolute; top: 5px; left: 7px; font: 600 10px/1 var(--font-display); letter-spacing: .1em; color: var(--muted); }
+.model-ctl { display: flex; gap: 4px; }
+.model-ctl button {
+  height: 24px; min-width: 32px; padding: 0 7px; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); font-size: 12px; line-height: 1;
+}
+.model-ctl button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: transparent; }
+.nav { display: flex; gap: 6px; }
+.icon-btn {
+  width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--surface); cursor: pointer; display: grid; place-items: center; font-size: 15px;
+}
+.icon-btn:disabled { opacity: .35; cursor: default; }
+.close-btn { display: none; }
+.sheet-body { padding: 14px 18px 20px; display: flex; flex-direction: column; gap: 18px; }
+.flavor { margin: 0; font-size: 14.5px; max-width: 65ch; }
+.flavor small { display: block; color: var(--muted); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.fact { background: var(--surface); padding: 8px 10px; min-width: 0; }
+.label { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.fact .v { font-family: var(--font-mono); font-size: 14px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.section h3 { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.section h3 span { font-family: var(--font-mono); letter-spacing: 0; text-transform: none; }
+.stat { display: grid; grid-template-columns: 62px 34px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 13px; padding-block: 3px; }
+.stat .k { color: var(--muted); font-size: 12px; letter-spacing: .04em; }
+.stat .v { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.track { height: 8px; border-radius: 4px; background: var(--bar-track); position: relative; overflow: hidden; }
+.track i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--bar); transition: width .35s ease; }
+.track i.hi { background: var(--accent); }
+.scale { display: grid; grid-template-columns: 62px 34px minmax(0, 1fr); gap: 10px; font-size: 10.5px; color: var(--muted); font-family: var(--font-mono); }
+.scale div:last-child { display: flex; justify-content: space-between; }
+.abil { display: flex; flex-wrap: wrap; gap: 6px; }
+.abil span { border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; font-size: 13px; text-transform: capitalize; }
+.abil span em { font-style: normal; color: var(--muted); font-size: 11px; margin-left: 4px; text-transform: none; }
+.link { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; text-transform: capitalize; font-family: var(--font-mono); font-size: 14px; }
+footer { color: var(--muted); font-size: 12px; padding-block: 0 32px; }
+footer a { color: inherit; }
+.scrim { display: none; }
+
+@media (max-width: 920px) {
+  main.wrap { grid-template-columns: minmax(0, 1fr); }
+  .sheet {
+    position: fixed; inset: auto 0 0 0; top: auto; z-index: 40; max-height: 86vh;
+    border-radius: 16px 16px 0 0; border-bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
+    transform: translateY(105%); transition: transform .25s ease; visibility: hidden;
+  }
+  body.open .sheet { transform: none; visibility: visible; }
+  .close-btn { display: grid; }
+  .scrim { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  body.open .scrim { opacity: 1; pointer-events: auto; }
+}
+@media (max-width: 480px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .brand h1 { font-size: 19px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sheet-hero img.hero-art { max-width: 58%; margin-left: 8%; }
+  .stage { width: 88px; height: 88px; }
+  .stage img { max-height: 66px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+<header class="strip" id="strip">
+  <div class="wrap">
+    <div class="strip-top">
+      <div class="brand">
+        <div class="lens" aria-hidden="true"></div>
+        <div>
+          <h1>Field Pokédex</h1>
+          <p class="source" id="source" data-kind="saved"><span class="led"></span><span id="sourceText">Entries No. 021–120</span></p>
+        </div>
+      </div>
+      <div class="search" role="search">
+        <input id="q" type="search" placeholder="Search by name or number" autocomplete="off" aria-label="Search by name or number">
+        <select id="sort" aria-label="Sort entries">
+          <option value="id">No. ↑</option>
+          <option value="name">Name A–Z</option>
+          <option value="total">Base stat total ↓</option>
+          <option value="weight">Weight ↓</option>
+          <option value="height">Height ↓</option>
+          <option value="speed">Speed ↓</option>
+        </select>
+      </div>
+    </div>
+    <div class="types" id="types" aria-label="Filter by type"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section aria-label="Pokémon list">
+    <div class="meta"><span id="count"></span><span id="filterNote"></span></div>
+    <div class="grid" id="grid"></div>
+  </section>
+  <aside class="sheet" id="sheet" aria-label="Entry details" aria-live="polite"></aside>
+</main>
+<div class="scrim" id="scrim"></div>
+
+<footer class="wrap">
+  Data and artwork from <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokeAPI</a>:
+  <span class="mono">GET https://pokeapi.co/api/v2/pokemon/?offset=20&amp;limit=100</span>, plus each Pokémon's detail and species endpoints.
+  Pokémon and its names are trademarks of Nintendo, Game Freak and Creatures. Fan-made, not affiliated.
+</footer>
+
+<script src="data.js"></script>
+<script>
+(() => {
+  // ---------- PokeAPI ----------
+  // The page reads this list, then each Pokémon's detail and species records.
+  // A saved copy (data.js, made from the same endpoints) draws first so the page is never blank,
+  // and stays in use where the live API can't be reached (for example inside claude.ai).
+  const API_LIST = 'https://pokeapi.co/api/v2/pokemon/?offset=20&limit=100';
+  const CACHE_KEY = 'pdx-pokeapi-021-120-v1';
+  const CACHE_MS = 24 * 60 * 60 * 1000;
+
+  async function getJson(url) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`PokeAPI answered ${r.status} for ${url}`);
+    return r.json();
+  }
+
+  const cleanText = (s) => String(s || '').replace(/[\f\n\r­]+/g, ' ').replace(/\s+/g, ' ').trim();
+
+  // Turns PokeAPI's /pokemon/{id} and /pokemon-species/{id} records into the shape the page draws.
+  function toEntry(p, s) {
+    const flavor = s.flavor_text_entries.filter(f => f.language.name === 'en');
+    const last = flavor[flavor.length - 1];
+    const sd = (p.sprites.other && p.sprites.other.showdown) || {};
+    const anim = {};
+    if (sd.front_default) anim.front = sd.front_default;
+    if (sd.back_default) anim.back = sd.back_default;
+    if (sd.front_shiny) anim.shiny = sd.front_shiny;
+    if (sd.back_shiny) anim.backShiny = sd.back_shiny;
+    return {
+      id: p.id,
+      name: p.name,
+      types: p.types.slice().sort((a, b) => a.slot - b.slot).map(t => t.type.name),
+      height: p.height,
+      weight: p.weight,
+      baseExp: p.base_experience,
+      abilities: p.abilities.map(a => ({ name: a.ability.name, hidden: a.is_hidden })),
+      stats: Object.fromEntries(p.stats.map(st => [st.stat.name, st.base_stat])),
+      genus: (s.genera.find(g => g.language.name === 'en') || {}).genus || '',
+      flavor: last ? cleanText(last.flavor_text) : '',
+      flavorVersion: last ? last.version.name : '',
+      legendary: s.is_legendary,
+      mythical: s.is_mythical,
+      habitat: s.habitat ? s.habitat.name : null,
+      captureRate: s.capture_rate,
+      evolvesFrom: s.evolves_from_species ? s.evolves_from_species.name : null,
+      sprite: (p.sprites.other && p.sprites.other['official-artwork'] && p.sprites.other['official-artwork'].front_default) || p.sprites.front_default,
+      anim,
+    };
+  }
+
+  async function loadFromPokeApi(onProgress) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (cached && Date.now() - cached.at < CACHE_MS && Array.isArray(cached.pokemon)) return { ...cached, cached: true };
+    } catch (e) {}
+    const list = await getJson(API_LIST);
+    const queue = list.results.slice();
+    const out = [];
+    let done = 0;
+    const worker = async () => {
+      while (queue.length) {
+        const item = queue.shift();
+        const p = await getJson(item.url);
+        const s = await getJson(p.species.url);
+        out.push(toEntry(p, s));
+        onProgress(++done, list.results.length);
+      }
+    };
+    await Promise.all(Array.from({ length: 8 }, worker));
+    const result = { at: Date.now(), total: list.count, pokemon: out.sort((a, b) => a.id - b.id) };
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(result)); } catch (e) {}
+    return result;
+  }
+
+  // ---------- page state ----------
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const pretty = (s) => String(s ?? '').replace(/-/g, ' ');
+  const no = (id) => 'No. ' + String(id).padStart(3, '0');
+  const total = (p) => Object.values(p.stats).reduce((a, b) => a + b, 0);
+  const STAT_LABEL = { hp: 'HP', attack: 'Attack', defense: 'Defense', 'special-attack': 'Sp. Atk', 'special-defense': 'Sp. Def', speed: 'Speed' };
+  const TYPE_COLOR = { normal:'#a8a77a', fire:'#ee8130', water:'#6390f0', electric:'#f7d02c', grass:'#7ac74c', ice:'#96d9d6',
+    fighting:'#c22e28', poison:'#a33ea1', ground:'#e2bf65', flying:'#a98ff3', psychic:'#f95587', bug:'#a6b91a',
+    rock:'#b6a136', ghost:'#735797', dragon:'#6f35fc', dark:'#705746', steel:'#b7b7ce', fairy:'#d685ad' };
+  const typeVars = (p) => `--c1:${TYPE_COLOR[p.types[0]] || '#888'};--c2:${TYPE_COLOR[p.types[1] || p.types[0]] || '#888'}`;
+  const model = { back: false, shiny: false };
+  const modelSrc = (p) => {
+    const a = p.anim || {};
+    return (model.shiny ? (model.back ? a.backShiny : a.shiny) : (model.back ? a.back : a.front)) || a.front;
+  };
+
+  let ALL = [];
+  let byName = new Map();
+  let apiTotal = (window.POKEDEX && window.POKEDEX.total) || null;
+  const state = { q: '', type: null, sort: 'id', currentId: null };
+  try { const s = localStorage.getItem('pdx-sort'); if (s) state.sort = s; } catch (e) {}
+  $('sort').value = state.sort;
+
+  function setSource(kind, text) { $('source').dataset.kind = kind; $('sourceText').textContent = text; }
+
+  function setData(list) {
+    ALL = list.map(p => ({ ...p, total: total(p) })).sort((a, b) => a.id - b.id);
+    byName = new Map(ALL.map(p => [p.name, p]));
+    renderTypes();
+    renderGrid();
+    const p = byName.get(decodeURIComponent(location.hash.slice(1))) || ALL.find(x => x.id === state.currentId) || ALL[0];
+    if (p) renderSheet(p);
+  }
+
+  // ---------- rendering ----------
+  function renderTypes() {
+    const counts = {};
+    ALL.forEach(p => p.types.forEach(t => counts[t] = (counts[t] || 0) + 1));
+    if (state.type && !counts[state.type]) state.type = null;
+    const order = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b));
+    $('types').innerHTML =
+      `<button class="chip" data-type="" aria-pressed="${!state.type}">All <span class="n">${ALL.length}</span></button>` +
+      order.map(t => `<button class="chip t-${t}" data-type="${t}" aria-pressed="${state.type === t}"><span class="dot"></span>${t} <span class="n">${counts[t]}</span></button>`).join('');
+  }
+  $('types').addEventListener('click', (e) => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    state.type = b.dataset.type || null;
+    $('types').querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String((c.dataset.type || null) === state.type)));
+    renderGrid();
+  });
+  $('q').addEventListener('input', (e) => { state.q = e.target.value.trim().toLowerCase(); renderGrid(); });
+  $('sort').addEventListener('change', (e) => {
+    state.sort = e.target.value;
+    try { localStorage.setItem('pdx-sort', state.sort); } catch (err) {}
+    renderGrid();
+  });
+
+  function filtered() {
+    const q = state.q.replace(/^#|^no\.?\s*/, '');
+    const list = ALL.filter(p =>
+      (!state.type || p.types.includes(state.type)) &&
+      (!q || p.name.includes(q) || pretty(p.name).includes(q) || String(p.id) === q.replace(/^0+/, '') || String(p.id).padStart(3, '0').startsWith(q)));
+    const cmp = {
+      id: (a, b) => a.id - b.id,
+      name: (a, b) => a.name.localeCompare(b.name),
+      total: (a, b) => b.total - a.total || a.id - b.id,
+      weight: (a, b) => b.weight - a.weight || a.id - b.id,
+      height: (a, b) => b.height - a.height || a.id - b.id,
+      speed: (a, b) => b.stats.speed - a.stats.speed || a.id - b.id,
+    }[state.sort] || ((a, b) => a.id - b.id);
+    return list.sort(cmp);
+  }
+
+  let visible = [];
+  function renderGrid() {
+    visible = filtered();
+    $('count').textContent = `${visible.length} of ${ALL.length} entries`;
+    $('filterNote').textContent = state.type ? `Type: ${state.type}` : (apiTotal ? `PokeAPI lists ${apiTotal.toLocaleString('en')} in total` : '');
+    if (!visible.length) {
+      $('grid').innerHTML = `<div class="empty" style="grid-column:1/-1">No entry matches “${esc(state.q)}”${state.type ? ' with type ' + esc(state.type) : ''}.<br><button class="chip" id="clear">Clear search and filters</button></div>`;
+      $('clear').onclick = () => { state.q = ''; state.type = null; $('q').value = ''; renderTypes(); renderGrid(); };
+      return;
+    }
+    $('grid').innerHTML = visible.map(p => `
+      <button class="card" style="${typeVars(p)}" data-id="${p.id}" ${state.currentId === p.id ? 'aria-current="true"' : ''} aria-label="${esc(pretty(p.name))}, ${no(p.id)}">
+        <span class="no mono">${no(p.id)}</span>
+        <span class="art">${p.sprite ? `<img src="${esc(p.sprite)}" alt="" loading="lazy" width="256" height="256">` : ''}</span>
+        <span class="nm">${esc(pretty(p.name))}</span>
+        <span class="pills">${p.types.map(t => `<span class="pill t-${t}">${t}</span>`).join('')}</span>
+      </button>`).join('');
+  }
+  $('grid').addEventListener('click', (e) => {
+    const c = e.target.closest('.card'); if (!c) return;
+    const p = ALL.find(x => x.id === Number(c.dataset.id)); if (!p) return;
+    if (location.hash.slice(1) === p.name) renderSheet(p); else location.hash = p.name;
+    openSheet();
+  });
+
+  function stepTo(delta) {
+    const list = visible.length ? visible : ALL;
+    const i = list.findIndex(p => p.id === state.currentId);
+    const next = list[i + delta];
+    if (next) location.hash = next.name;
+  }
+
+  function renderSheet(p) {
+    state.currentId = p.id;
+    document.querySelectorAll('.card[aria-current]').forEach(c => c.removeAttribute('aria-current'));
+    const card = document.querySelector(`.card[data-id="${p.id}"]`);
+    if (card) card.setAttribute('aria-current', 'true');
+    const list = visible.length ? visible : ALL;
+    const i = list.findIndex(x => x.id === p.id);
+    const max = Math.max(...Object.values(p.stats));
+    const from = p.evolvesFrom ? byName.get(p.evolvesFrom) : null;
+    const status = p.mythical ? 'Mythical' : p.legendary ? 'Legendary' : '';
+    $('sheet').setAttribute('style', typeVars(p));
+    $('sheet').innerHTML = `
+      <div class="sheet-hero">
+        <div class="sheet-head">
+          <span class="no mono">${no(p.id)}${status ? ' · ' + status : ''}</span>
+          <div class="nav">
+            <button class="icon-btn" id="prev" aria-label="Previous entry" ${i <= 0 ? 'disabled' : ''}>←</button>
+            <button class="icon-btn" id="next" aria-label="Next entry" ${i === -1 || i >= list.length - 1 ? 'disabled' : ''}>→</button>
+            <button class="icon-btn close-btn" id="close" aria-label="Close entry">✕</button>
+          </div>
+        </div>
+        <h2>${esc(pretty(p.name))}</h2>
+        <div class="genus">${esc(p.genus)}</div>
+        <div class="pills" style="margin-top:8px">${p.types.map(t => `<span class="pill t-${t}">${t}</span>`).join('')}</div>
+        ${p.sprite ? `<img class="hero-art" src="${esc(p.sprite)}" alt="Official artwork of ${esc(pretty(p.name))}" width="256" height="256">` : ''}
+        ${p.anim && p.anim.front ? `
+        <div class="model">
+          <div class="stage"><span class="tag">3D</span><img id="m3d" src="${esc(modelSrc(p))}" alt="Animated 3D model of ${esc(pretty(p.name))}"></div>
+          <div class="model-ctl" role="group" aria-label="3D model view">
+            <button id="mFlip" aria-pressed="${model.back}" title="Show back" aria-label="Show back">↻</button>
+            <button id="mShiny" aria-pressed="${model.shiny}" title="Shiny colours" aria-label="Shiny colours">✦</button>
+          </div>
+        </div>` : ''}
+      </div>
+      <div class="sheet-body">
+        ${p.flavor ? `<p class="flavor">${esc(p.flavor)}<small>Pokédex entry · ${esc(pretty(p.flavorVersion))}</small></p>` : ''}
+        <div class="facts">
+          <div class="fact"><div class="label">Height</div><div class="v">${(p.height / 10).toFixed(1)} m</div></div>
+          <div class="fact"><div class="label">Weight</div><div class="v">${(p.weight / 10).toFixed(1)} kg</div></div>
+          <div class="fact"><div class="label">Base exp.</div><div class="v">${p.baseExp ?? '—'}</div></div>
+          <div class="fact"><div class="label">Catch rate</div><div class="v">${p.captureRate} / 255</div></div>
+          <div class="fact"><div class="label">Habitat</div><div class="v" style="text-transform:capitalize">${p.habitat ? esc(pretty(p.habitat)) : '—'}</div></div>
+          <div class="fact"><div class="label">Evolves from</div><div class="v">${
+            from ? `<button class="link" data-go="${esc(from.name)}">${esc(pretty(from.name))}</button>`
+                 : p.evolvesFrom ? `<span style="text-transform:capitalize">${esc(pretty(p.evolvesFrom))}</span>` : '—'}</div></div>
+        </div>
+        <div class="section">
+          <h3>Base stats <span>Total ${p.total}</span></h3>
+          ${Object.entries(p.stats).map(([k, v]) => `
+            <div class="stat"><span class="k">${STAT_LABEL[k] || esc(k)}</span><span class="v">${v}</span>
+              <span class="track" role="img" aria-label="${STAT_LABEL[k] || esc(k)} ${v} of 255"><i class="${v === max ? 'hi' : ''}" style="width:${(v / 255 * 100).toFixed(1)}%"></i></span></div>`).join('')}
+          <div class="scale" aria-hidden="true"><span></span><span></span><div><span>0</span><span>85</span><span>170</span><span>255</span></div></div>
+        </div>
+        <div class="section">
+          <h3>Abilities</h3>
+          <div class="abil">${p.abilities.map(a => `<span>${esc(pretty(a.name))}${a.hidden ? '<em>hidden</em>' : ''}</span>`).join('')}</div>
+        </div>
+      </div>`;
+    $('prev').onclick = () => stepTo(-1);
+    $('next').onclick = () => stepTo(1);
+    $('close').onclick = closeSheet;
+    $('sheet').querySelectorAll('[data-go]').forEach(b => b.onclick = () => { location.hash = b.dataset.go; });
+    if ($('m3d')) {
+      const sync = () => {
+        $('m3d').src = modelSrc(p);
+        $('mFlip').setAttribute('aria-pressed', String(model.back));
+        $('mShiny').setAttribute('aria-pressed', String(model.shiny));
+      };
+      $('mFlip').onclick = () => { model.back = !model.back; sync(); };
+      $('mShiny').onclick = () => { model.shiny = !model.shiny; sync(); };
+    }
+  }
+
+  const narrow = () => matchMedia('(max-width: 920px)').matches;
+  function openSheet() { if (narrow()) document.body.classList.add('open'); }
+  function closeSheet() { document.body.classList.remove('open'); }
+  $('scrim').addEventListener('click', closeSheet);
+  document.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, select')) return;
+    if (e.key === 'Escape') closeSheet();
+    if (e.key === 'ArrowRight') stepTo(1);
+    if (e.key === 'ArrowLeft') stepTo(-1);
+    if (e.key === '/') { e.preventDefault(); $('q').focus(); }
+  });
+  window.addEventListener('hashchange', () => {
+    const p = byName.get(decodeURIComponent(location.hash.slice(1)));
+    if (p) { renderSheet(p); openSheet(); }
+  });
+
+  const syncStrip = () => document.documentElement.style.setProperty('--strip-h', $('strip').offsetHeight + 'px');
+  window.addEventListener('resize', syncStrip);
+  syncStrip();
+
+  // ---------- start: saved copy first, then the live API ----------
+  setData((window.POKEDEX && window.POKEDEX.pokemon) || []);
+  setSource('loading', 'Loading from PokeAPI…');
+  loadFromPokeApi((done, of) => setSource('loading', `Loading from PokeAPI… ${done}/${of}`))
+    .then((res) => {
+      apiTotal = res.total || apiTotal;
+      setData(res.pokemon);
+      setSource('live', res.cached ? 'Live data from PokeAPI (saved today)' : 'Live data from PokeAPI');
+    })
+    .catch(() => setSource('saved', 'Saved copy of PokeAPI data (live API not reachable here)'));
+})();
+</script>
